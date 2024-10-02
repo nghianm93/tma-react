@@ -9,6 +9,13 @@ import { Link } from '@/components/Link/Link';
 import tonSvg from './_assets/ton.svg';
 
 import { hapticFeedback } from '@telegram-apps/sdk';
+import {
+    defineEventHandlers,
+    on,
+    postEvent,
+} from '@telegram-apps/bridge';
+
+defineEventHandlers();
 
 console.log(hapticFeedback.isSupported());
 
@@ -19,6 +26,14 @@ export default function Home() {
     // Function to handle the button click
     const handleButtonClick = () => {
         hapticFeedback.impactOccurred('medium');
+        postEvent('web_app_setup_back_button', { is_visible: true });
+
+        // Handle back button press event
+        const off = on('back_button_pressed', () => {
+            // Hide back button when it's clicked
+            postEvent('web_app_setup_back_button', { is_visible: false });
+            off(); // Remove the event handler after it is clicked
+        });
     };
 
 
